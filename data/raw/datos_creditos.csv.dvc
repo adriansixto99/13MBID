@@ -1,0 +1,6 @@
+outs:
+- md5: 60376e78b46d92c4d908d75e1b068128
+  size: 579336
+  isexec: true
+  hash: md5
+  path: datos_creditos.csv
