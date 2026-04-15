@@ -46,13 +46,13 @@ stages:
       isexec: true
     - path: test/test_data_quality.py
       hash: md5
-      md5: abe4541c5b1505598bbcd2c71d1b140a
-      size: 4994
+      md5: c6d2ce46f0ed5f93fc8460114ad074a9
+      size: 6002
     outs:
     - path: docs/report_basico.html
       hash: md5
-      md5: 4fa40b64f3c32ec59308945eaf28a10d
-      size: 43944
+      md5: bf0c5bcc7adce3c5a7f528868769f2f5
+      size: 45234
   test_ge:
     cmd: pytest --html=docs/report_ge.html --self-contained-html 
       test/test_data_quality_ge.py -v || true
@@ -69,10 +69,10 @@ stages:
       isexec: true
     - path: test/test_data_quality_ge.py
       hash: md5
-      md5: 50debe920b0c5ed8cc91df1a3b4c9404
-      size: 2484
+      md5: b61e44b1cf0d3850281adfd55ea7997b
+      size: 3040
     outs:
     - path: docs/report_ge.html
       hash: md5
-      md5: 4c714188813370d16365d1b744d2153d
-      size: 32239
+      md5: d221796ece1aa5bd19302c5155944c80
+      size: 36623
