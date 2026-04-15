@@ -27,10 +27,95 @@ def test_esquema_datos_creditos(datos_creditos):
     Args:
         datos_creditos (pd.DataFrame): DataFrame con los datos de créditos.
     """
+    # Atributo a analizar: Exactitud (a nivel de estructura del dataset)
     esquema = DataFrameSchema({
-        "id_cliente": Column(int, nullable=False),
+        "id_cliente": Column(float, nullable=False),
         "edad": Column(int, Check.greater_than_or_equal_to(18)),
+        "importe_solicitado": Column(int, Check.greater_than(0)),
+        "duración_credito": Column(float, Check.greater_than(0)),
+        "antiguedad_empleado": Column(float, Check.greater_than_or_equal_to(0), nullable=True),
+        "situacion_vivienda": Column(str, nullable=False),
+        "objetivo_credito": Column(str, nullable=False),
+        "pct_ingreso": Column(float, Check.greater_than_or_equal_to(0)),
+        "tasa_interes": Column(float, Check.greater_than_or_equal_to(0)),
+        "estado_credito": Column(int, nullable=False),
         "ingresos": Column(float, Check.greater_than_or_equal_to(0)),
         "falta_pago": Column(int, nullable=False)
     })
     esquema.validate(datos_creditos)
+
+def test_esquema_datos_tarjetas(datos_tarjetas):
+    """ Prueba para validar el esquema de los datos de tarjetas.
+    Args:
+        datos_tarjetas (pd.DataFrame): DataFrame con los datos de tarjetas.
+    """
+    # Atributo a analizar: Exactitud (a nivel de estructura del dataset)
+    esquema = DataFrameSchema({
+        "id_cliente": Column(float, nullable=False),
+        #TODO: completar con las columnas del dataset de tarjetas
+    })
+    esquema.validate(datos_tarjetas)
+
+
+def test_basicos_creditos(datos_creditos):
+    """ Prueba para validar aspectos básicos de los datos de créditos.
+    Args:
+        datos_creditos (pd.DataFrame): DataFrame con los datos de créditos.
+    """
+    # Atributo a analizar: Exactitud (a nivel de estructura del dataset)
+    df = datos_creditos
+    # Verificar que el dataset no sea nulo completamente
+    assert not df.empty, "El dataset de créditos está vacío."
+    # Verificar la cantidad de columnas para completar estructura del dataset
+    assert df.shape[1] == 12, f"El dataset de créditos debería tener 12 columnas, pero tiene {df.shape[1]}"
+
+    # Verificar que no haya valores nulos en general
+    # Atributo a analizar: Completitud (a nivel general del dataset)
+    assert df.isnull().sum().sum() == 0, "Existen valores nulos en el dataset de créditos."
+
+
+def test_basicos_tarjetas(datos_tarjetas):
+    """ Prueba para validar aspectos básicos de los datos de tarjetas.
+    Args:
+        datos_tarjetas (pd.DataFrame): DataFrame con los datos de tarjetas.
+    """
+    # Atributo a analizar: Exactitud (a nivel de estructura del dataset)
+    df = datos_tarjetas
+    # Verificar que el dataset no sea nulo completamente
+    assert not df.empty, "El dataset de tarjetas está vacío."
+    # Verificar la cantidad de columnas para completar estructura del dataset
+    assert df.shape[1] == 11, f"El dataset de tarjetas debería tener 11 columnas, pero tiene {df.shape[1]}"
+
+    # Verificar que no haya valores nulos en general
+    # Atributo a analizar: Completitud (a nivel general del dataset)
+    assert df.isnull().sum().sum() == 0, "Existen valores nulos en el dataset de tarjetas."
+
+
+def test_integridad_referencial(datos_creditos, datos_tarjetas):
+    """ Prueba para validar la integridad referencial entre los datasets de créditos y tarjetas.
+    Args:
+        datos_creditos (pd.DataFrame): DataFrame con los datos de créditos.
+        datos_tarjetas (pd.DataFrame): DataFrame con los datos de tarjetas.
+    """
+    # Atributo a analizar: Consistencia (a nivel de relación entre datasets)
+
+    df_ids = datos_creditos[['id_cliente']].merge(
+        datos_tarjetas[['id_cliente']],
+        on='id_cliente',
+        how='outer',
+        indicator=True
+    )
+    integridad_referencial = DataFrameSchema({
+        '_merge': Column(
+            str,
+            Check.isin(['both']),
+            nullable=False
+        )
+    })
+    integridad_referencial.validate(df_ids)
+
+#######################################################
+# TODO: Agregar al menos una función de test con una (1)
+# o más validaciones más allá de la estructura del dataset
+# Por ejemplo: unicidad de IDs en ambos datasets
+#######################################################
