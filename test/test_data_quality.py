@@ -52,7 +52,16 @@ def test_esquema_datos_tarjetas(datos_tarjetas):
     # Atributo a analizar: Exactitud (a nivel de estructura del dataset)
     esquema = DataFrameSchema({
         "id_cliente": Column(float, nullable=False),
-        #TODO: completar con las columnas del dataset de tarjetas
+        "antiguedad_cliente": Column(float, Check.greater_than_or_equal_to(0)),
+        "estado_civil": Column(str, nullable=False),
+        "estado_cliente": Column(str, nullable=False),
+        "gastos_ult_12m": Column(float, Check.greater_than_or_equal_to(0)),
+        "genero": Column(str, nullable=False),
+        "limite_credito_tc": Column(float, Check.greater_than_or_equal_to(0)),
+        "nivel_educativo": Column(str, nullable=False),
+        "nivel_tarjeta": Column(str, nullable=False),
+        "operaciones_ult_12m": Column(float, Check.greater_than_or_equal_to(0)),
+        "personas_a_cargo": Column(float, Check.greater_than_or_equal_to(0))
     })
     esquema.validate(datos_tarjetas)
 
@@ -114,8 +123,16 @@ def test_integridad_referencial(datos_creditos, datos_tarjetas):
     })
     integridad_referencial.validate(df_ids)
 
-#######################################################
-# TODO: Agregar al menos una función de test con una (1)
-# o más validaciones más allá de la estructura del dataset
-# Por ejemplo: unicidad de IDs en ambos datasets
-#######################################################
+def test_unicidad_ids(datos_creditos, datos_tarjetas):
+    """ Prueba para validar la unicidad de los IDs en ambos datasets.
+    Args:
+        datos_creditos (pd.DataFrame): DataFrame con los datos de créditos.
+        datos_tarjetas (pd.DataFrame): DataFrame con los datos de tarjetas.
+    """
+    # Atributo a analizar: Unicidad (identificadores únicos por cliente)
+    
+    # Verificar unicidad en créditos
+    assert datos_creditos['id_cliente'].is_unique, "Se encontraron IDs de cliente duplicados en el dataset de créditos."
+    
+    # Verificar unicidad en tarjetas
+    assert datos_tarjetas['id_cliente'].is_unique, "Se encontraron IDs de cliente duplicados en el dataset de tarjetas."
