@@ -32,7 +32,7 @@ def test_esquema_datos_creditos(datos_creditos):
         "id_cliente": Column(float, nullable=False),
         "edad": Column(int, Check.greater_than_or_equal_to(18)),
         "importe_solicitado": Column(int, Check.greater_than(0)),
-        "duración_credito": Column(float, Check.greater_than(0)),
+        "duracion_credito": Column(float, Check.greater_than(0)),
         "antiguedad_empleado": Column(float, Check.greater_than_or_equal_to(0), nullable=True),
         "situacion_vivienda": Column(str, nullable=False),
         "objetivo_credito": Column(str, nullable=False),
