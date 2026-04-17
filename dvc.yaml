@@ -27,3 +27,12 @@ stages:
       - test/test_data_quality_ge.py
     outs:   
       - docs/report_ge.html
+
+  data_processing:
+    cmd: python src/data_prep.py
+    deps:
+      - src/data_prep.py
+      - data/raw/datos_creditos.csv
+      - data/raw/datos_tarjetas.csv
+    outs:
+      - data/processed/datos_integrados.csv
