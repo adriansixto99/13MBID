@@ -98,3 +98,31 @@ stages:
       hash: md5
       md5: b4440ff9aa8529a27911aa946c5e7c57
       size: 1983347
+  train_model:
+    cmd: python src/train_model.py
+    deps:
+    - path: data/processed/datos_integrados.csv
+      hash: md5
+      md5: b4440ff9aa8529a27911aa946c5e7c57
+      size: 1983347
+    - path: src/train_model.py
+      hash: md5
+      md5: 7823902a9afbf5fd18b7f8df1ac704ba
+      size: 6899
+    outs:
+    - path: docs/figures/confusion_matrix.png
+      hash: md5
+      md5: 9626596a6c756fde47cb4e0765e3d061
+      size: 16563
+    - path: metrics/train_metrics.json
+      hash: md5
+      md5: 6a9036778e37d9aacd033d2649d06094
+      size: 188
+    - path: models/prod_model.pkl
+      hash: md5
+      md5: 2c52092fd16b509f6f6b44b8b3fc039d
+      size: 26534
+    - path: models/prod_preprocessor.pkl
+      hash: md5
+      md5: 249b4307e0117b86dd33e4171999011a
+      size: 5351
