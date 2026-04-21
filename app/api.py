@@ -116,7 +116,11 @@ def predict(request: PredictionRequest):
         
         # Mapear las etiquetas de clase a nombres legibles
         class_labels = model.named_steps['model'].classes_
-        probability_dict = {class_labels[i]: float(probability[i]) for i in range(len(probability))}
+        probability_dict = {
+            # El dict de porbabilidades se construye dinámicamente para que se adapte a cualquir número de clases
+            # CAMBIO: no estaba hecha la conversión a str y ese era el error en SP6
+            str(class_labels[i]): float(probability[i]) for i in range(len(class_labels))}
+        
         model_info = {
             "model_version": "1.0.0",
             "model_type": " Logistic Regression",
