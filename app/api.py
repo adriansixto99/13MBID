@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import pandas as pd
 import joblib
-from typing import Dict
+from typing import Dict, Any
 
 app = FastAPI(
     title="Modelo de Predicción de Mora en Créditos",
@@ -11,7 +11,7 @@ app = FastAPI(
 )
 
 class PredictionRequest(BaseModel):
-    features: Dict[str, float] = Field(..., description="Un diccionario con las características del cliente para la predicción.")
+    features: Dict[str, Any] = Field(..., description="Un diccionario con las características del cliente para la predicción.")
     edad: int = Field(..., description="Edad del cliente.")
     antiguedad_empleado: float = Field(..., description="Antigüedad del empleado.")
     situacion_vivienda: str = Field(..., description="Situación de vivienda del cliente.")
