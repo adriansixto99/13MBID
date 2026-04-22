@@ -10,8 +10,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# RESOLUCIÓN DEL TODO
 class PredictionRequest(BaseModel):
-    features: Dict[str, Any] = Field(..., description="Un diccionario con las características del cliente para la predicción.")
+    # Se eliminó la llave anidada 'features: Dict...'. 
+    # Ahora la API recibe los datos planos, exactamente como salieron del preprocesamiento.
     edad: int = Field(..., description="Edad del cliente.")
     antiguedad_empleado: float = Field(..., description="Antigüedad del empleado.")
     situacion_vivienda: str = Field(..., description="Situación de vivienda del cliente.")
@@ -37,29 +39,28 @@ class PredictionRequest(BaseModel):
     class Config:
         json_schema_extra = {
             "example": {
-                "features": {
-                    "edad": 21,
-                    "antiguedad_empleado": 5.0,
-                    "situacion_vivienda": "PROPIA",
-                    "ingresos": 9600,
-                    "objetivo_credito": "EDUCACIÓN",
-                    "pct_ingreso": 0.1,
-                    "tasa_interes": 11.14,
-                    "estado_credito": 0,
-                    "antiguedad_cliente": 39.0,
-                    "estado_civil": "CASADO",
-                    "estado_cliente": "ACTIVO",
-                    "genero": "M",
-                    "limite_credito_tc": 12691.0,
-                    "nivel_educativo": "SECUNDARIO_COMPLETO",
-                    "personas_a_cargo": 3.0,
-                    "capacidad_pago": 0.104167,
-                    "operaciones_mensuales": 3.5,
-                    "presion_financiera": 0.17125,
-                    "gasto_promedio_operacion": 27.238095,
-                    "operaciones_tarjeta_mensuales": 3.5,
-                    "estabilidad_laboral": 0.238095
-                }
+                # El ejemplo se adaptó para reflejar el envío plano de variables
+                "edad": 21,
+                "antiguedad_empleado": 5.0,
+                "situacion_vivienda": "PROPIA",
+                "ingresos": 9600,
+                "objetivo_credito": "EDUCACION",
+                "pct_ingreso": 0.1,
+                "tasa_interes": 11.14,
+                "estado_credito": 0,
+                "antiguedad_cliente": 39.0,
+                "estado_civil": "CASADO",
+                "estado_cliente": "ACTIVO",
+                "genero": "M",
+                "limite_credito_tc": 12691.0,
+                "nivel_educativo": "SECUNDARIO_COMPLETO",
+                "personas_a_cargo": 3.0,
+                "capacidad_pago": 0.104167,
+                "operaciones_mensuales": 3.5,
+                "presion_financiera": 0.17125,
+                "gasto_promedio_operacion": 27.238095,
+                "operaciones_tarjeta_mensuales": 3.5,
+                "estabilidad_laboral": 0.238095
             }
         }
     
@@ -107,23 +108,22 @@ def predict(request: PredictionRequest):
         raise HTTPException(status_code=500, detail="El modelo no está disponible para realizar predicciones.")
     
     try:
-        # Convertir las características a un DataFrame
+        # Convertir las características a un DataFrame (ahora se mapea limpio y directo)
         input_data = pd.DataFrame([request.dict()])
         
         # Realizar la predicción
-        prediction = model.predict_proba(input_data)[0]
+        prediction = model.predict(input_data)[0]
         probability = model.predict_proba(input_data)[0]
         
         # Mapear las etiquetas de clase a nombres legibles
         class_labels = model.named_steps['model'].classes_
         probability_dict = {
-            # El dict de porbabilidades se construye dinámicamente para que se adapte a cualquir número de clases
-            # CAMBIO: no estaba hecha la conversión a str y ese era el error en SP6
-            str(class_labels[i]): float(probability[i]) for i in range(len(class_labels))}
+            str(class_labels[i]): float(probability[i]) for i in range(len(class_labels))
+        }
         
         model_info = {
             "model_version": "1.0.0",
-            "model_type": " Logistic Regression",
+            "model_type": "Logistic Regression",
         }
         
         return PredictionResponse(
